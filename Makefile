@@ -3,8 +3,7 @@ NAME			:=	philo
 MAKEFLAGS		+=	-j
 COMPILER		:=	cc
 
-BASE_FLAGS		:=	-Wall -Wextra -Werror
-# BASE_FLAGS		:=	-std=c99 -Wall -Wextra -Werror
+BASE_FLAGS		:=	-std=c99 -Wall -Wextra -Werror
 
 # PEDANTIC		:=	-Wpedantic -pedantic-errors -Wundef -Wstrict-prototypes
 

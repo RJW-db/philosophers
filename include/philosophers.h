@@ -27,6 +27,25 @@
 #  define VALGRIND_MARGIN false
 # endif
 
+/*
+** usleep() feature-test compatibility:
+** - glibc >= 2.19: _DEFAULT_SOURCE
+** - older glibc:   _BSD_SOURCE
+** Must be defined before any system header.
+** Ensures usleep() is visible on Linux/glibc systems.
+** See man 3 usleep and feature_test_macros(7).
+*/
+# if defined(__linux__) || defined(__GLIBC__)
+# if !defined(_DEFAULT_SOURCE)
+#  define _DEFAULT_SOURCE
+# endif
+# if !defined(_BSD_SOURCE)
+#  define _BSD_SOURCE
+# endif
+#endif
+
+// # include <time.h>
+// # include <sys/types.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>

@@ -42,7 +42,7 @@ void	*reporter(t_data *data)
 		{
 			break ;
 		}
-		usleep((useconds_t)((float)data->philo_n * 1.4));
+		usleep((useconds_t)((float)data->philo_n * 1.4F));
 		usleep((useconds_t)data->philo_n);
 		pthread_mutex_lock(&data->mtx_data);
 		continuum = data->check;
