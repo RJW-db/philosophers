@@ -92,10 +92,6 @@ $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
 	$(COMPILER) $(CFLAGS) -I $(INC_DIR) -c $< -o $@
 
-# valgrind_margin --tool=helgrind --max-threads=10000 ./philo
-time readable no_rules verbose valgrind_margin: all
-	@:
-
 clean:
 	@$(RM) $(BUILD_DIR) $(DELETE)
 	@printf "$(REMOVED)" $(BUILD_DIR) $(CUR_DIR)$(BUILD_DIR)
@@ -108,17 +104,17 @@ re:
 	$(MAKE) $(PRINT_NO_DIR) fclean
 	$(MAKE) $(PRINT_NO_DIR) all
 
-debug: all
+time readable no_rules verbose valgrind_margin debug valgrind: all
+	@:
 
 print-%:
 	$(info $($*))
 
 -include $(DEPS)
 
-.PHONY:	all												\
+.PHONY:	all clean fclean re								\
 		time readable verbose no_rules valgrind_margin	\
-		clean fclean re									\
-		debug print-%
+		debug valgrind print-%
 
 # Terminal markup
 BOLD			:=	\033[1m
