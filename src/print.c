@@ -45,16 +45,14 @@ const char	*get_status_coloured(int nbr)
 
 void	print_error(const char *msg)
 {
-	char	*tmp;
+	size_t	len;
 
-	tmp = (char *)msg;
-	while (*tmp != '\0')
+	len = 0;
+	while (msg[len] != '\0')
+		++len;
+	if (write(STDERR_FILENO, msg, len) == -1)
 	{
-		++tmp;
-	}
-	if (write(STDERR_FILENO, msg, (size_t)(tmp - msg)) == -1)
-	{
-		(void)tmp;
+		return ;
 	}
 }
 
