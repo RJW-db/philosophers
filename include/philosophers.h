@@ -17,9 +17,6 @@
 //	time using either miliseconds or microseconds
 #  define TIME 1
 # endif
-# ifndef READABLE
-#  define READABLE false
-# endif
 # ifndef EXPLICIT_RULES
 #  define EXPLICIT_RULES true
 # endif
