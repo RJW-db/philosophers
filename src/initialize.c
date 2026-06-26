@@ -12,8 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-bool		initialize(t_data *data, const bool argc, const char **argv);
 //	Static Functions
 static void	init_philosophers(t_data *data, t_philo *philo, ssize_t philo_n);
 static void	distribute_forks(t_philo *philo, ssize_t philo_n);

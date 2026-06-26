@@ -12,9 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-ssize_t			phil_atoui(const char *argv);
-
 //	Static Functions
 static bool		valid_digit_input(const char *num);
 static ssize_t	between_one_and_uint_max(ssize_t nbr);

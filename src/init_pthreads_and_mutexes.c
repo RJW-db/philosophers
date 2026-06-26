@@ -12,9 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-bool		pthreads_creation(t_data *data, t_philo *p);
-bool		initialize_mutexes(t_data *data);
 //	Static Functions
 static void	set_start_values_for_phils(t_data *data, t_philo *phil, ssize_t i);
 static bool	init_loop_through_phils(t_data *data);

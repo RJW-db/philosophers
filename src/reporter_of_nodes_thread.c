@@ -24,9 +24,6 @@
 # define STATUS_FMT "%zu %zu %s\n"
 #endif
 
-//	Global Functions
-void		*reporter(t_data *data);
-void		create_msg_node(t_philo *phil, t_phase phase);
 //	Static Functions
 static bool	report_nodes(t_data *data);
 static void	add_node_to_list(t_philo *phil, t_list *node);
@@ -53,7 +50,7 @@ void	*reporter(t_data *data)
 
 void	create_msg_node(t_philo *phil, t_phase phase)
 {
-	t_list			*node;
+	t_list	*node;
 
 	node = malloc(sizeof(t_list) * 1);
 	if (node == NULL)
@@ -78,6 +75,7 @@ static bool	report_nodes(t_data *data)
 	static t_phase	last_phase = START_INIT;
 	t_list			*current_node;
 	t_list			*tmp;
+	ssize_t			runtime;
 
 	pthread_mutex_lock(&data->mtx_data);
 	current_node = data->lst;
@@ -93,8 +91,8 @@ static bool	report_nodes(t_data *data)
 		tmp = current_node;
 		last_phase = tmp->phase;
 		current_node = current_node->next;
-		printf(STATUS_FMT, \
-		get_runtime(data->t_start), tmp->phil_id, STATUS_FN((int)last_phase));
+		runtime = get_runtime(data->t_start);
+		printf(STATUS_FMT, runtime, tmp->phil_id, STATUS_FN((int)last_phase));
 		free(tmp);
 	}
 	return (true);

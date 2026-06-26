@@ -17,9 +17,9 @@
  * Keeps small rounding errors from breaking death-time checks.
  * 1 means exact comparison with no extra margin, 1000 allows a small buffer.
  */
-# ifndef TIME
-#  define TIME 1
-# endif
+#ifndef TIME
+# define TIME 1
+#endif
 
 //	Static Functions
 static void	routine(t_philo *phil);

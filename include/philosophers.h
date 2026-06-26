@@ -13,13 +13,6 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# ifndef DEBUG
-#  define DEBUG false
-# endif
-# ifndef VALGRIND_MARGIN
-#  define VALGRIND_MARGIN false
-# endif
-
 /*
 ** usleep() feature-test compatibility:
 ** - glibc >= 2.19: _DEFAULT_SOURCE
@@ -29,16 +22,21 @@
 ** See man 3 usleep and feature_test_macros(7).
 */
 # if defined(__linux__) || defined(__GLIBC__)
-# if !defined(_DEFAULT_SOURCE)
-#  define _DEFAULT_SOURCE
+#  if !defined(_DEFAULT_SOURCE)
+#   define _DEFAULT_SOURCE
+#  endif
+#  if !defined(_BSD_SOURCE)
+#   define _BSD_SOURCE
+#  endif
 # endif
-# if !defined(_BSD_SOURCE)
-#  define _BSD_SOURCE
-# endif
-#endif
 
-// # include <time.h>
-// # include <sys/types.h>
+# ifndef DEBUG
+#  define DEBUG false
+# endif
+# ifndef VALGRIND_MARGIN
+#  define VALGRIND_MARGIN false
+# endif
+
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>

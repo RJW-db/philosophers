@@ -12,11 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global	Functions
-ssize_t	get_time(void);
-ssize_t	get_runtime(ssize_t start_time);
-bool	usleep_interval(t_philo *phil, ssize_t sleep_amount);
-
 ssize_t	get_time(void)
 {
 	struct timeval	current_time;

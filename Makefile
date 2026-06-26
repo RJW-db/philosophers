@@ -26,7 +26,7 @@ endif
 
 DEPFLAGS		:=	-MMD -MP
 
-OPTIMIZATION	:=	-Ofast
+OPTIMIZATION	:=	-O2
 SECURITY		:=	-fstack-protector-strong
 
 ifeq ($(COMPILER_KIND),gcc)

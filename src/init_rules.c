@@ -12,9 +12,9 @@
 
 #include "philosophers.h"
 
-# ifndef EXPLICIT_RULES
-#  define EXPLICIT_RULES true
-# endif
+#ifndef EXPLICIT_RULES
+# define EXPLICIT_RULES true
+#endif
 
 //	Static Functions
 static bool		number_of_philosophers(t_data *data, const char *argv_one);
@@ -96,7 +96,7 @@ static ssize_t	reconsidering_life_choices(t_data *data)
 	{
 		time_for_thoughts = 0;
 	}
-	else if (VALGRIND_MARGIN == false) //TODO remove
+	else if (VALGRIND_MARGIN == false)
 	{
 		time_for_thoughts = (ssize_t)((double)time_for_thoughts * 0.9);
 	}
