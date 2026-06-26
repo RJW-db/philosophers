@@ -12,8 +12,9 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-bool			rules(t_data *data, const bool argc, const char **argv);
+#ifndef EXPLICIT_RULES
+# define EXPLICIT_RULES true
+#endif
 
 //	Static Functions
 static bool		number_of_philosophers(t_data *data, const char *argv_one);
@@ -52,13 +53,13 @@ bool	rules(t_data *data, const bool argc, const char **argv)
 static bool	number_of_philosophers(t_data *data, const char *argv_one)
 {
 	data->philo_n = phil_atoui(argv_one);
-	if (data->philo_n != -1 && data->philo_n <= 999)
+	if (data->philo_n != -1 && data->philo_n <= 20000)
 	{
 		return (true);
 	}
-	if (data->philo_n > 999)
+	if (data->philo_n > 20000)
 	{
-		print_error("No more that 999 philosophers\n");
+		print_error("No more that 20000 philosophers\n");
 	}
 	return (false);
 }

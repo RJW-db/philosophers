@@ -12,9 +12,15 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-void		*philosopher(t_philo *phil);
-bool		is_phil_alive(t_philo *phil);
+/**
+ * Time scale factor used for timing comparisons in the chosen unit.
+ * Keeps small rounding errors from breaking death-time checks.
+ * 1 means exact comparison with no extra margin, 1000 allows a small buffer.
+ */
+#ifndef TIME
+# define TIME 1
+#endif
+
 //	Static Functions
 static void	routine(t_philo *phil);
 
@@ -33,14 +39,14 @@ void	*philosopher(t_philo *phil)
 	{
 		pthread_mutex_lock(phil->cutlery.left_fork);
 		create_msg_node(phil, FORK);
-		usleep_interval(phil, (ssize_t)((float)phil->t_die * 1.1));
+		usleep_interval(phil, (ssize_t)((float)phil->t_die * 1.1F));
 		pthread_mutex_unlock(phil->cutlery.left_fork);
 		return (NULL);
 	}
 	if (phil->id % 2 == 0)
 	{
 		create_msg_node(phil, THINK);
-		usleep((useconds_t)((float)phil->t_eat * 0.8));
+		usleep((useconds_t)((float)phil->t_eat * 0.8F));
 	}
 	routine(phil);
 	return (NULL);

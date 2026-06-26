@@ -12,8 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-void		supervisor(t_data *data, bool limit_less);
 //	Static Functions
 static bool	check_status(t_data *data, t_philo *phil);
 static bool	verify_meals(t_data *data, t_philo *phil);
@@ -34,8 +32,8 @@ void	supervisor(t_data *data, bool limit_less)
 	}
 	else
 	{
-		while (check_status(data, phil) == true && \
-		verify_meals(data, phil) == false)
+		while (check_status(data, phil) == true
+			&& verify_meals(data, phil) == false)
 		{
 			usleep(500);
 		}

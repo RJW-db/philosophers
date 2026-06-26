@@ -13,16 +13,23 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# ifndef TIME
-//	time using either miliseconds or microseconds
-#  define TIME 1
+/*
+** usleep() feature-test compatibility:
+** - glibc >= 2.19: _DEFAULT_SOURCE
+** - older glibc:   _BSD_SOURCE
+** Must be defined before any system header.
+** Ensures usleep() is visible on Linux/glibc systems.
+** See man 3 usleep and feature_test_macros(7).
+*/
+# if defined(__linux__) || defined(__GLIBC__)
+#  if !defined(_DEFAULT_SOURCE)
+#   define _DEFAULT_SOURCE
+#  endif
+#  if !defined(_BSD_SOURCE)
+#   define _BSD_SOURCE
+#  endif
 # endif
-# ifndef READABLE
-#  define READABLE false
-# endif
-# ifndef EXPLICIT_RULES
-#  define EXPLICIT_RULES true
-# endif
+
 # ifndef DEBUG
 #  define DEBUG false
 # endif
@@ -42,12 +49,10 @@
 # define MTX_FORK true
 # define MTX_BOUND false
 
-//	or without typedef,
-//	(void *(*)(void *))philosopher
-typedef void					*(*t_cast)(void *);
-typedef const char				*(*t_func)(int);
-typedef pthread_mutex_t			t_mtx;
-typedef struct s_data t_data;
+typedef void			*(*t_cast)(void *);
+typedef const char		*(*t_func)(int);
+typedef pthread_mutex_t	t_mtx;
+typedef struct s_data	t_data;
 
 typedef enum e_phase
 {
@@ -98,7 +103,7 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-typedef struct s_data
+struct s_data
 {
 	ssize_t		philo_n;
 	ssize_t		t_die;
@@ -115,10 +120,7 @@ typedef struct s_data
 	pthread_t	report;
 	t_list		*lst;
 	t_mtx		mtx_data;
-}	t_data;
-
-//	main.c
-// int	main(const int argc, const char **argv);
+};
 
 //	initialize.c
 bool		initialize(t_data *data, const bool argc, const char **argv);

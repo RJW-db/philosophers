@@ -12,13 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-bool	grab_forks(t_philo *phil, t_mtx *left_fork, t_mtx *right_fork);
-void	return_forks(t_mtx *left_fork, t_mtx *right_fork);
-bool	feast(t_philo *phil);
-void	snoozing(t_philo *phil);
-void	day_dreaming(t_philo *phil);
-
 bool	grab_forks(t_philo *phil, t_mtx *left_fork, t_mtx *right_fork)
 {
 	pthread_mutex_lock(left_fork);
@@ -41,7 +34,6 @@ void	return_forks(t_mtx *left_fork, t_mtx *right_fork)
 {
 	pthread_mutex_unlock(left_fork);
 	pthread_mutex_unlock(right_fork);
-	// usleep(1);
 }
 
 bool	feast(t_philo *phil)

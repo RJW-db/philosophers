@@ -12,34 +12,34 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-void		*reporter(t_data *data);
-void		create_msg_node(t_philo *phil, t_phase phase);
+#ifndef READABLE
+# define READABLE false
+#endif
+
+#if READABLE
+# define STATUS_FN get_status_coloured
+# define STATUS_FMT "%8zu %3zu %s\n"
+#else
+# define STATUS_FN get_status
+# define STATUS_FMT "%zu %zu %s\n"
+#endif
+
 //	Static Functions
-static bool	report_nodes(t_data *data, t_func func_status, const char *marking);
+static bool	report_nodes(t_data *data);
 static void	add_node_to_list(t_philo *phil, t_list *node);
 
 void	*reporter(t_data *data)
 {
-	bool		continuum;
-	t_func		status;
-	const char	*marking;
+	bool	continuum;
 
-	status = get_status;
-	marking = "%zu %zu %s\n";
-	if (READABLE == true)
-	{
-		status = get_status_coloured;
-		marking = "%8zu %3zu %s\n";
-	}
 	continuum = true;
 	while (continuum == true)
 	{
-		if (report_nodes(data, status, marking) == false)
+		if (report_nodes(data) == false)
 		{
 			break ;
 		}
-		usleep((useconds_t)((float)data->philo_n * 1.4));
+		usleep((useconds_t)((float)data->philo_n * 1.4F));
 		usleep((useconds_t)data->philo_n);
 		pthread_mutex_lock(&data->mtx_data);
 		continuum = data->check;
@@ -50,7 +50,7 @@ void	*reporter(t_data *data)
 
 void	create_msg_node(t_philo *phil, t_phase phase)
 {
-	t_list			*node;
+	t_list	*node;
 
 	node = malloc(sizeof(t_list) * 1);
 	if (node == NULL)
@@ -70,11 +70,12 @@ void	create_msg_node(t_philo *phil, t_phase phase)
 	add_node_to_list(phil, node);
 }
 
-static bool	report_nodes(t_data *data, t_func func_status, const char *marking)
+static bool	report_nodes(t_data *data)
 {
 	static t_phase	last_phase = START_INIT;
 	t_list			*current_node;
 	t_list			*tmp;
+	ssize_t			runtime;
 
 	pthread_mutex_lock(&data->mtx_data);
 	current_node = data->lst;
@@ -90,8 +91,8 @@ static bool	report_nodes(t_data *data, t_func func_status, const char *marking)
 		tmp = current_node;
 		last_phase = tmp->phase;
 		current_node = current_node->next;
-		printf(marking, \
-		get_runtime(data->t_start), tmp->phil_id, func_status((int)last_phase));
+		runtime = get_runtime(data->t_start);
+		printf(STATUS_FMT, runtime, tmp->phil_id, STATUS_FN((int)last_phase));
 		free(tmp);
 	}
 	return (true);

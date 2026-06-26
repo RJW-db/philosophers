@@ -17,12 +17,6 @@
 #define RED "\033[31m"
 #define RESET "\033[0m"
 
-//	Global Functions
-const char	*get_status(int nbr);
-const char	*get_status_coloured(int nbr);
-void		print_error(const char *msg);
-void		debugger(t_data *data, ssize_t ate_enough);
-
 const char	*get_status(int nbr)
 {
 	const char	*status[5] = {
@@ -51,16 +45,14 @@ const char	*get_status_coloured(int nbr)
 
 void	print_error(const char *msg)
 {
-	char	*tmp;
+	size_t	len;
 
-	tmp = (char *)msg;
-	while (*tmp != '\0')
+	len = 0;
+	while (msg[len] != '\0')
+		++len;
+	if (write(STDERR_FILENO, msg, len) == -1)
 	{
-		++tmp;
-	}
-	if (write(STDERR_FILENO, msg, (size_t)(tmp - msg)) == -1)
-	{
-		
+		return ;
 	}
 }
 

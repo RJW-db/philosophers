@@ -12,9 +12,6 @@
 
 #include "philosophers.h"
 
-//	Global Functions
-ssize_t			phil_atoui(const char *argv);
-
 //	Static Functions
 static bool		valid_digit_input(const char *num);
 static ssize_t	between_one_and_uint_max(ssize_t nbr);
@@ -57,9 +54,9 @@ static bool	valid_digit_input(const char *nbr)
 		print_error("An empty line is not a positive number\n");
 		return (false);
 	}
-	while (nbr[i] == '+')
-		++i;
-	if (nbr[i] == '-' || (nbr[i] < '0' && nbr[i] > '9'))
+	if (nbr[i] == '+')
+		i++;
+	if (nbr[i] == '-' || nbr[i] == '\0' || nbr[i] < '0' || nbr[i] > '9')
 	{
 		print_error("Only positive numbers allowed 1\n");
 		return (false);
