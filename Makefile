@@ -5,32 +5,32 @@ COMPILER		:=	cc
 
 BASE_FLAGS		:=	-std=c99 -Wall -Wextra -Werror
 
-# PEDANTIC		:=	-Wpedantic -pedantic-errors -Wundef -Wstrict-prototypes
+THREAD_FLAGS	:=	-pthread
 
-# WARNINGS		:=	-Wshadow -Wconversion -Wsign-conversion			\
-# 					-Wformat=2 -Wuninitialized -Wunreachable-code
+PEDANTIC		:=	-Wpedantic -pedantic-errors -Wundef -Wstrict-prototypes
 
-# CAST_WARNINGS	:=	-Wbad-function-cast
-# ifeq ($(shell $(COMPILER) --version | grep -c "gcc"),1)
-# CAST_WARNINGS	+=	-Wcast-function-type
-# endif
+WARNINGS		:=	-Wshadow -Wconversion -Wsign-conversion			\
+					-Wformat=2 -Wuninitialized -Wunreachable-code
+
+CAST_WARNINGS	:=	-Wbad-function-cast
+ifeq ($(shell $(COMPILER) --version | grep -c "gcc"),1)
+CAST_WARNINGS	+=	-Wcast-function-type
+endif
 
 DEPFLAGS		:=	-MMD -MP
 
-# OPTIMIZATION	:=	-O2
-# SECURITY		:=	-fstack-protector-strong
-# ifeq ($(shell uname -s),Linux)
-# SECURITY		+=	-D_FORTIFY_SOURCE=2
-# FSANITIZE		:=	leak
-# endif
+OPTIMIZATION	:=	-O2
+SECURITY		:=	-fstack-protector-strong
+ifeq ($(shell uname -s),Linux)
+SECURITY		+=	-D_FORTIFY_SOURCE=2
+FSANITIZE		:=	leak,
+endif
 
-# SANITIZERS		:=	-fsanitize=$(FSANITIZE),address,undefined,null,integer-divide-by-zero,signed-integer-overflow,bounds,alignment
-# DEBUG_FLAGS		:=	-fno-omit-frame-pointer
+SANITIZERS		:=	-fsanitize=$(FSANITIZE)address,undefined,null,integer-divide-by-zero,signed-integer-overflow,bounds,alignment
+DEBUG_FLAGS		:=	-fno-omit-frame-pointer
 
-CFLAGS			:=	$(BASE_FLAGS) $(PEDANTIC) $(WARNINGS) $(CAST_WARNINGS) \
-					$(DEPFLAGS) $(OPTIMIZATION) $(SECURITY)
-
-CFLAGS			+=	-pthread
+CFLAGS			:=	$(BASE_FLAGS) $(THREAD_FLAGS) $(PEDANTIC) $(WARNINGS)	\
+					$(CAST_WARNINGS) $(DEPFLAGS) $(OPTIMIZATION) $(SECURITY)
 
 ifeq ($(filter time,$(MAKECMDGOALS)),time)
 	CFLAGS += -D TIME=1000
@@ -44,8 +44,8 @@ ifeq ($(filter no_rules,$(MAKECMDGOALS)),no_rules)
 	CFLAGS += -D EXPLICIT_RULES=false
 endif
 
-ifeq ($(filter debug_philo,$(MAKECMDGOALS)),debug_philo)
-	CFLAGS += -D DEBUG=true
+ifeq ($(filter VERBOSE,$(MAKECMDGOALS)),VERBOSE)
+	CFLAGS += -D VERBOSE=true
 endif
 
 ifeq ($(filter valgrind,$(MAKECMDGOALS)),valgrind)
@@ -96,7 +96,7 @@ readable: all
 
 no_rules: all
 
-debug_philo: all
+verbose: all
 
 # valgrind --tool=helgrind --max-threads=10000 ./philo
 valgrind: all
@@ -120,7 +120,7 @@ print-%:
 
 -include $(DEPS)
 
-.PHONY:	all time readable debug_philo no_rules valgrind clean fclean re debug print-%
+.PHONY:	all time readable verbose no_rules valgrind clean fclean re debug print-%
 
 # .PHONY: all			\
 # 		clean fclean re	\

@@ -13,13 +13,6 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# ifndef TIME
-//	time using either miliseconds or microseconds
-#  define TIME 1
-# endif
-# ifndef EXPLICIT_RULES
-#  define EXPLICIT_RULES true
-# endif
 # ifndef DEBUG
 #  define DEBUG false
 # endif
@@ -58,12 +51,10 @@
 # define MTX_FORK true
 # define MTX_BOUND false
 
-//	or without typedef,
-//	(void *(*)(void *))philosopher
-typedef void					*(*t_cast)(void *);
-typedef const char				*(*t_func)(int);
-typedef pthread_mutex_t			t_mtx;
-typedef struct s_data t_data;
+typedef void			*(*t_cast)(void *);
+typedef const char		*(*t_func)(int);
+typedef pthread_mutex_t	t_mtx;
+typedef struct s_data	t_data;
 
 typedef enum e_phase
 {
@@ -114,7 +105,7 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-typedef struct s_data
+struct s_data
 {
 	ssize_t		philo_n;
 	ssize_t		t_die;
@@ -131,10 +122,7 @@ typedef struct s_data
 	pthread_t	report;
 	t_list		*lst;
 	t_mtx		mtx_data;
-}	t_data;
-
-//	main.c
-// int	main(const int argc, const char **argv);
+};
 
 //	initialize.c
 bool		initialize(t_data *data, const bool argc, const char **argv);
