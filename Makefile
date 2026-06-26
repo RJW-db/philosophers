@@ -2,26 +2,42 @@ NAME			:=	philo
 
 MAKEFLAGS		+=	-j
 COMPILER		:=	cc
+COMPILER_INFO	:=	$(shell $(COMPILER) -v 2>&1)
+
+COMPILER_KIND	:=	unknown
+ifneq ($(findstring clang version,$(COMPILER_INFO)),)
+COMPILER_KIND	:=	clang
+endif
+ifneq ($(findstring gcc version,$(COMPILER_INFO)),)
+COMPILER_KIND	:=	gcc
+endif
 
 BASE_FLAGS		:=	-std=c99 -Wall -Wextra -Werror
-
 THREAD_FLAGS	:=	-pthread
 
 PEDANTIC		:=	-Wpedantic -pedantic-errors -Wundef -Wstrict-prototypes
-
 WARNINGS		:=	-Wshadow -Wconversion -Wsign-conversion			\
 					-Wformat=2 -Wuninitialized -Wunreachable-code
 
 CAST_WARNINGS	:=	-Wbad-function-cast
-ifeq ($(shell $(COMPILER) --version | grep -c "gcc"),1)
+ifeq ($(COMPILER_KIND),gcc)
 CAST_WARNINGS	+=	-Wcast-function-type
 endif
 
 DEPFLAGS		:=	-MMD -MP
 
-OPTIMIZATION	:=	-O2
+OPTIMIZATION	:=	-Ofast
 SECURITY		:=	-fstack-protector-strong
-ifeq ($(shell uname -s),Linux)
+
+ifeq ($(COMPILER_KIND),gcc)
+OPTIMIZATION	+=	-flto=auto -fuse-linker-plugin
+endif
+
+ifeq ($(COMPILER_KIND),clang)
+OPTIMIZATION	+=	-flto=thin
+endif
+
+ifeq ($(OS),Linux)
 SECURITY		+=	-D_FORTIFY_SOURCE=2
 FSANITIZE		:=	leak,
 endif
@@ -32,31 +48,17 @@ DEBUG_FLAGS		:=	-fno-omit-frame-pointer
 CFLAGS			:=	$(BASE_FLAGS) $(THREAD_FLAGS) $(PEDANTIC) $(WARNINGS)	\
 					$(CAST_WARNINGS) $(DEPFLAGS) $(OPTIMIZATION) $(SECURITY)
 
-ifeq ($(filter time,$(MAKECMDGOALS)),time)
-	CFLAGS += -D TIME=1000
-endif
-
-ifeq ($(filter readable,$(MAKECMDGOALS)),readable)
-	CFLAGS += -D READABLE=true
-endif
-
-ifeq ($(filter no_rules,$(MAKECMDGOALS)),no_rules)
-	CFLAGS += -D EXPLICIT_RULES=false
-endif
-
-ifeq ($(filter VERBOSE,$(MAKECMDGOALS)),VERBOSE)
-	CFLAGS += -D VERBOSE=true
-endif
-
-ifeq ($(filter valgrind,$(MAKECMDGOALS)),valgrind)
-	CFLAGS += -D VALGRIND_MARGIN=true
-endif
-
-ifneq ($(filter helgrind,$(MAKECMDGOALS)),)
+ifneq ($(filter valgrind,$(MAKECMDGOALS)),)
 CFLAGS			+=	-g $(DEBUG_FLAGS)
 else ifneq ($(filter debug,$(MAKECMDGOALS)),)
 CFLAGS			+=	-g3 $(SANITIZERS) $(DEBUG_FLAGS) -fno-sanitize-recover=all
 endif
+
+CFLAGS			+=	$(if $(filter time,$(MAKECMDGOALS)),-D TIME=1000)
+CFLAGS			+=	$(if $(filter readable,$(MAKECMDGOALS)),-D READABLE=true)
+CFLAGS			+=	$(if $(filter no_rules,$(MAKECMDGOALS)),-D EXPLICIT_RULES=false)
+CFLAGS			+=	$(if $(filter verbose,$(MAKECMDGOALS)),-D VERBOSE=true)
+CFLAGS			+=	$(if $(filter valgrind_margin,$(MAKECMDGOALS)),-D VALGRIND_MARGIN=true)
 
 PRINT_NO_DIR	:=	--no-print-directory
 RM				:=	rm -rf
@@ -90,16 +92,9 @@ $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
 	$(COMPILER) $(CFLAGS) -I $(INC_DIR) -c $< -o $@
 
-time: all
-
-readable: all
-
-no_rules: all
-
-verbose: all
-
-# valgrind --tool=helgrind --max-threads=10000 ./philo
-valgrind: all
+# valgrind_margin --tool=helgrind --max-threads=10000 ./philo
+time readable no_rules verbose valgrind_margin: all
+	@:
 
 clean:
 	@$(RM) $(BUILD_DIR) $(DELETE)
@@ -120,11 +115,10 @@ print-%:
 
 -include $(DEPS)
 
-.PHONY:	all time readable verbose no_rules valgrind clean fclean re debug print-%
-
-# .PHONY: all			\
-# 		clean fclean re	\
-# 		debug helgrind print-%
+.PHONY:	all												\
+		time readable verbose no_rules valgrind_margin	\
+		clean fclean re									\
+		debug print-%
 
 # Terminal markup
 BOLD			:=	\033[1m
