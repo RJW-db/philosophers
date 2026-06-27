@@ -2,6 +2,10 @@
 
 **Philosophers** is a concurrency project written in C that simulates the Dining Philosophers Problem. It is built around thread coordination, mutex protection, timing accuracy, and safe resource management.
 
+<p align="center">
+  <img width="700" height="462" alt="philo" src="https://github.com/user-attachments/assets/95c2d26a-66c4-4f08-a0c8-c301ada1065b" />
+</p>
+
 ## Features
 
 - **Thread-based simulation** of philosophers competing for shared forks
